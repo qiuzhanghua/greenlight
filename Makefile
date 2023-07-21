@@ -5,7 +5,7 @@ clean:
 	rm -rf bin/*
 
 build:
-	go build -o bin/greenlight ./...
+	go build -o bin/greenlight ./cmd/api
 
 test:
 	go test -v ./...
