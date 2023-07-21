@@ -9,15 +9,15 @@ import (
 
 var ErrInvalidRuntimeFormat = errors.New("invalid runtime format")
 
-type RunTime int32
+type Runtime int32
 
-func (r *RunTime) MarshalJSON() ([]byte, error) {
+func (r *Runtime) MarshalJSON() ([]byte, error) {
 	jsonValue := fmt.Sprintf("%d mins", r)
 	quotedJSONValue := strconv.Quote(jsonValue)
 	return []byte(quotedJSONValue), nil
 }
 
-func (r *RunTime) UnmarshalJSON(jsonValue []byte) error {
+func (r *Runtime) UnmarshalJSON(jsonValue []byte) error {
 	unquotedJSONValue, err := strconv.Unquote(string(jsonValue))
 	if err != nil {
 		return ErrInvalidRuntimeFormat
@@ -30,6 +30,6 @@ func (r *RunTime) UnmarshalJSON(jsonValue []byte) error {
 	if err != nil {
 		return ErrInvalidRuntimeFormat
 	}
-	*r = RunTime(value)
+	*r = Runtime(value)
 	return nil
 }

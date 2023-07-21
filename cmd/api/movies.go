@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"greenlight.taiji.dev/internal/data"
+	"greenlight.taiji.dev/internal/validator"
 	"net/http"
 	"time"
 )
@@ -11,7 +12,7 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 	var input struct {
 		Title   string       `json:"title"`
 		Year    int32        `json:"year"`
-		RunTime data.RunTime `json:"runtime"`
+		Runtime data.Runtime `json:"runtime"`
 		Genres  []string     `json:"genres"`
 	}
 	err := app.readJSON(w, r, &input)
@@ -19,6 +20,23 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 		app.badRequestResponse(w, r, err)
 		return
 	}
+
+	movie := &data.Movie{
+		Title:   input.Title,
+		Year:    input.Year,
+		Runtime: input.Runtime,
+		Genres:  input.Genres,
+	}
+	v := validator.New()
+	if data.ValidateMovie(v, movie); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
 	fmt.Fprintf(w, "%+v\n", input)
 }
 
@@ -32,7 +50,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		ID:        id,
 		CreatedAt: time.Now(),
 		Title:     "Casablanca",
-		RunTime:   102,
+		Runtime:   102,
 		Genres:    []string{"drama", "romance", "war"},
 		Version:   1,
 	}
