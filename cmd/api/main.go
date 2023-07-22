@@ -4,11 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"flag"
-	"fmt"
 	_ "github.com/lib/pq"
 	"greenlight.taiji.dev/internal/data"
 	"greenlight.taiji.dev/internal/jsonlog"
-	"net/http"
 	"os"
 	"time"
 )
@@ -67,18 +65,10 @@ func main() {
 		models: data.NewModels(db),
 	}
 
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+	err = app.serve()
+	if err != nil {
+		logger.PrintFatal(err.Error(), nil)
 	}
-	logger.PrintInfo("starting server",
-		map[string]string{"env": cfg.env, "addr": srv.Addr})
-	err = srv.ListenAndServe()
-	logger.PrintFatal(err.Error(), nil)
-
 }
 
 func openDB(cfg config) (*sql.DB, error) {
