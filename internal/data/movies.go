@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"github.com/lib/pq"
@@ -52,12 +53,16 @@ func (m MovieModel) Get(id int64) (*Movie, error) {
 	}
 
 	query := `
-			SELECT id, created_at, title, year, runtime, genres, version FROM movies
+			SELECT id, created_at, title, year, runtime, genres, version 
+			FROM movies
 			WHERE id = $1`
 
 	var movie Movie
 
-	err := m.DB.QueryRow(query, id).Scan(&movie.ID,
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	err := m.DB.QueryRowContext(ctx, query, id).Scan(
+		&movie.ID,
 		&movie.CreatedAt,
 		&movie.Title,
 		&movie.Year,
