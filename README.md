@@ -7,6 +7,11 @@ http POST :8080/v1/movies title="Moana" year:=2016 genres:='["animation","advent
 ```
 
 ## Postgres
+
+```bash
+pg_ctl -D $TDP_HOME/data/pgsql/14.5-1 -l /Users/daniel/tdp/log/pgsql/14.5-1/logfile start
+```
+
 ```bash
 psql -U postgres -h localhost -p 5432
 ```
@@ -33,3 +38,6 @@ exit
 export GREENLIGHT_DB_DSN='postgres://greenlight:pass@localhost/greenlight?sslmode=disable'
 ```
 
+```bash
+pg_ctl stop
+```
