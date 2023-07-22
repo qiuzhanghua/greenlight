@@ -16,11 +16,13 @@ type Models struct {
 		Delete(id int64) error
 		GetAll(string, []string, Filters) ([]*Movie, Metadata, error)
 	}
+	Users UserModel
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
 		Movies: MovieModel{DB: db},
+		Users:  UserModel{DB: db},
 	}
 }
 
