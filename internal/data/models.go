@@ -14,6 +14,7 @@ type Models struct {
 		Get(id int64) (*Movie, error)
 		Update(movie *Movie) error
 		Delete(id int64) error
+		GetAll(string, []string, Filters) ([]*Movie, error)
 	}
 }
 
